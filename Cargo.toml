@@ -10,4 +10,5 @@ authors = ["lightless"]
 clap = {version="4.0.19", features=["cargo"]}
 log = "0.4.17"
 log4rs = "1.2.0"
-tokio = {version = "1", features = ["fs", "rt", "rt-multi-thread"]}
+tokio = {version = "1", features = ["fs", "rt", "rt-multi-thread", "macros", "time", "sync", "io-std", "io-util"]}
+async-channel = "1.7.1"
