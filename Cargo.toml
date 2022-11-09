@@ -1,0 +1,13 @@
+[package]
+name = "enum-subdomain"
+version = "0.0.1"
+edition = "2021"
+authors = ["lightless"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = {version="4.0.19", features=["cargo"]}
+log = "0.4.17"
+log4rs = "1.2.0"
+tokio = {version = "1", features = ["fs", "rt", "rt-multi-thread"]}
