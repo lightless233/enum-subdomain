@@ -1,6 +1,7 @@
 use std::path::Path;
 
 use clap::{command, value_parser, Arg, ArgAction, Command};
+use itertools::Itertools;
 
 #[derive(Debug, Default)]
 pub struct AppArgs {
@@ -125,11 +126,17 @@ impl AppArgs {
         };
 
         // 取 output
-        self.output_path = if let Some(output) = matches.get_one::<String>("output") {
-            output.to_owned()
-        } else {
-            format!("{}.txt", self.target)
-        };
+        self.output_path = matches
+            .get_one::<String>("output")
+            .map_or(format!("{}.txt", self.target), |it| it.to_owned());
+
+        // 取 nameserver
+        self.nameserver_list = matches
+            .get_one::<String>("nameserver")
+            .map_or(vec![], |it| it.split(',').collect::<Vec<&str>>())
+            .iter()
+            .map(|&it| it.to_owned())
+            .collect::<Vec<String>>();
 
         // 取 task_count
         self.task_count = matches.get_one::<usize>("task-count").unwrap().to_owned();

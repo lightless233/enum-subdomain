@@ -28,7 +28,7 @@ impl AppContext {
 pub struct ResolveResult {
     pub domain: String,
     pub title: Option<String>,
-    pub code: Option<usize>,
+    pub code: Option<u16>,
     pub ip: Vec<String>,
     pub cname: Vec<String>,
 }
