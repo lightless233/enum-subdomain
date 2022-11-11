@@ -36,10 +36,14 @@ pub async fn saver(
 
         // 把结果格式化成行，临时先简单的格式化即可
         let result = result.unwrap();
-        println!("Found: {:?}", result);
+        // println!("Found: {:?}", result);
         let line = format!(
             "{} - {:?} - {:?} - {:?} - {:?}\n",
-            result.domain, result.ip, result.cname, result.code, result.title
+            result.domain,
+            result.ip,
+            result.cname,
+            result.code.unwrap_or(0),
+            result.title.unwrap_or("".to_string()),
         );
         if let Err(e) = output_file.write(line.as_bytes()).await {
             eprintln!("write file error, value: {:?}, error: {:?}", line, e)

@@ -38,6 +38,7 @@ impl TaskBuilderTrait for EnumBuilder {
                 if task.starts_with('-') {
                     continue;
                 }
+
                 if let Err(e) = task_channel.send(task.clone()).await {
                     eprintln!("Error put task to channel, task:{}, error:{:?}", task, e)
                 }
