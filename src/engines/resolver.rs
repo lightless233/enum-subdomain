@@ -52,6 +52,7 @@ pub async fn resolver(
                 break;
             }
             tokio::time::sleep(Duration::from_millis(200)).await;
+            continue;
         }
 
         // 开始解析域名

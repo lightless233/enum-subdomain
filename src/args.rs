@@ -169,7 +169,8 @@ impl AppArgs {
                     length_part[0].parse::<usize>(),
                     length_part[1].parse::<usize>(),
                 ) {
-                    if first != 0 && second != 0 && second < first {
+                    println!("first: {}, second: {}", first, second);
+                    if first != 0 && second != 0 && second > first {
                         return Ok((first, second));
                     }
                 }
