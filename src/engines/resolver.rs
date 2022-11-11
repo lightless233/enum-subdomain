@@ -47,6 +47,8 @@ pub async fn resolver(
         if let Err(e) = check_wildcard(target, &resolver).await {
             eprintln!("Find wildcard record, IP list: {:?}", e);
             exit(-1);
+        } else {
+            println!("No wildcard records.")
         }
     }
 
@@ -125,6 +127,7 @@ async fn check_wildcard(
     target: &str,
     resolver: &AsyncResolver<GenericConnection, GenericConnectionProvider<TokioRuntime>>,
 ) -> Result<(), String> {
+    println!("start checking wildcard resolve.");
     let mut wildcards: Vec<String> = vec!["thisdomainneverexist".into()];
     let rand_subdomain = rand::thread_rng()
         .sample_iter(&Alphanumeric)
@@ -132,6 +135,7 @@ async fn check_wildcard(
         .map(char::from)
         .collect();
     wildcards.push(rand_subdomain);
+    println!("domain list: {:?}", wildcards);
 
     for wildcard in wildcards {
         let full_domain = format!("{}.{}", wildcard, target);
