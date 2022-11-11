@@ -25,7 +25,7 @@ pub async fn resolver(
     app_args: Arc<AppArgs>,
     app_context: Arc<Mutex<AppContext>>,
 ) {
-    println!("Resolver engine {idx} start!");
+    // println!("Resolver engine {idx} start!");
     let mut guard = app_context.lock().await;
     guard.resolver_status[idx] = EngineStatus::Running;
     drop(guard);
@@ -84,7 +84,7 @@ pub async fn resolver(
     }
 
     app_context.lock().await.resolver_status[idx] = EngineStatus::Stop;
-    println!("Resolver engine {idx} finished!");
+    // println!("Resolver engine {idx} finished!");
 }
 
 /// 构建 DNS Resolver
