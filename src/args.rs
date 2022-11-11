@@ -155,26 +155,27 @@ impl AppArgs {
 
         let length = length.unwrap();
         let length_part = length.split('-').collect::<Vec<_>>();
+        // println!("length part: {:?}", length_part);
         match length_part.len() {
             1 => {
                 if let Ok(_length) = length_part[0].parse::<usize>() {
                     Ok((_length, _length))
                 } else {
-                    Err("length参数有误，请检查长度参数1!")
+                    Err("length参数有误，请检查长度参数-1!")
                 }
             }
-            3 => {
+            2 => {
                 if let (Ok(first), Ok(second)) = (
                     length_part[0].parse::<usize>(),
-                    length_part[2].parse::<usize>(),
+                    length_part[1].parse::<usize>(),
                 ) {
                     if first != 0 && second != 0 && second < first {
                         return Ok((first, second));
                     }
                 }
-                Err("length参数有误，请检查长度参数!")
+                Err("length参数有误，请检查长度参数-2!")
             }
-            _ => Err("length参数有误，请检查长度参数!"),
+            _ => Err("length参数有误，请检查长度参数-3!"),
         }
     }
 }
