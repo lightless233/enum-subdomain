@@ -1,4 +1,4 @@
-use std::{net::SocketAddr, process::exit, sync::Arc, time::Duration};
+use std::{net::SocketAddr, sync::Arc, time::Duration};
 
 use async_channel::{Receiver, Sender};
 use rand::{distributions::Alphanumeric, Rng};
@@ -41,16 +41,6 @@ pub async fn resolver(
         .timeout(Duration::from_secs(9))
         .build()
         .unwrap();
-
-    // 泛解析检查
-    if app_args.check_wildcard {
-        if let Err(e) = check_wildcard(target, &resolver).await {
-            eprintln!("Find wildcard record, IP list: {:?}", e);
-            exit(-1);
-        } else {
-            println!("No wildcard records.")
-        }
-    }
 
     // 获取网页标题的正则
     let title_regex = Regex::new(r"<title.*?>(?P<title>.+?)</title>").unwrap();
@@ -97,7 +87,7 @@ pub async fn resolver(
 }
 
 /// 构建 DNS Resolver
-fn build_resolver(
+pub fn build_resolver(
     nameservers: &Vec<String>,
 ) -> Result<AsyncResolver<GenericConnection, GenericConnectionProvider<TokioRuntime>>, ResolveError>
 {
@@ -123,7 +113,7 @@ fn build_resolver(
 }
 
 /// 检查泛解析
-async fn check_wildcard(
+pub async fn check_wildcard(
     target: &str,
     resolver: &AsyncResolver<GenericConnection, GenericConnectionProvider<TokioRuntime>>,
 ) -> Result<(), String> {

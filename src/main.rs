@@ -1,6 +1,7 @@
-use std::sync::Arc;
+use std::{process::exit, sync::Arc};
 
 use args::AppArgs;
+use resolver::{build_resolver, check_wildcard};
 use tokio::sync::Mutex;
 
 use crate::{
@@ -25,6 +26,17 @@ async fn main() {
 
     let app_args = Arc::new(app_args);
     let app_context = Arc::new(Mutex::new(AppContext::new()));
+
+    // 先进行一次泛解析检查，如果有泛解析直接退出，不要等到后面再检查泛解析
+    if app_args.check_wildcard {
+        let resolver = build_resolver(&app_args.nameserver_list).unwrap();
+        if let Err(e) = check_wildcard(&app_args.target, &resolver).await {
+            eprintln!("Find wildcard record, IP list: {:?}", e);
+            exit(-1);
+        } else {
+            println!("No wildcard records.")
+        }
+    }
 
     // 启动 task_builder
     let task_builder = tokio::spawn(task_builder(
