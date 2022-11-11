@@ -22,10 +22,7 @@ impl TaskBuilderTrait for EnumBuilder {
     async fn build(task_channel: Sender<String>, app_args: &Arc<AppArgs>) {
         println!("TaskBuilder EnumBuilder start!");
         // 字符池
-        let mut pool = ('a'..='z')
-            .chain('A'..='Z')
-            .chain('0'..='9')
-            .collect::<Vec<_>>();
+        let mut pool = ('a'..='z').chain('0'..='9').collect::<Vec<_>>();
         pool.push('-');
 
         let length = app_args.length;
