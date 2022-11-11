@@ -53,17 +53,15 @@ struct DictBuilder {}
 impl DictBuilder {
     /// 根据参数决定使用内置字典还是从文件读字典
     async fn get_dict_content(dict_path: Option<&String>) -> Result<String, std::io::Error> {
-        match dict_path {
-            Some(path) => {
-                // 读取用户提供的字典文件
-                let content = read_to_string(path).await?;
-                Ok(content)
-            }
-            None => {
-                // 使用内置字典
-                println!("未指定自定义字典文件，使用内置字典.");
-                Ok(include_str!("../../dicts/default.txt").to_owned())
-            }
+        let dict_path = dict_path.unwrap();
+        if dict_path.is_empty() {
+            // 使用内置字典
+            println!("No dict specified, use default dict.");
+            Ok(include_str!("../../dicts/default.txt").to_owned())
+        } else {
+            // 读取用户提供的字典文件
+            let content = read_to_string(dict_path).await?;
+            Ok(content)
         }
     }
 

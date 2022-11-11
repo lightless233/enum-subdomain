@@ -75,7 +75,7 @@ pub async fn resolver(
         }
 
         // 把解析结果扔到队列里
-        if !cname_list.is_empty() && !ip_list.is_empty() {
+        if !cname_list.is_empty() || !ip_list.is_empty() {
             let res = ResolveResult {
                 domain,
                 title,
@@ -83,6 +83,7 @@ pub async fn resolver(
                 ip: ip_list,
                 cname: cname_list,
             };
+            println!("Found: {:?}", res);
             if let Err(e) = result_channel.send(res).await {
                 eprintln!("Error put task to result_channel, error: {:?}", e);
             }

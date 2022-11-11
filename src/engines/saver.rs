@@ -10,7 +10,7 @@ use crate::{
 };
 
 pub async fn saver(
-    rx: Receiver<Arc<ResolveResult>>,
+    rx: Receiver<ResolveResult>,
     app_context: Arc<Mutex<AppContext>>,
     app_args: Arc<AppArgs>,
 ) {

@@ -1,7 +1,6 @@
 use std::path::Path;
 
 use clap::{command, value_parser, Arg, ArgAction, Command};
-use itertools::Itertools;
 
 #[derive(Debug, Default)]
 pub struct AppArgs {
@@ -108,7 +107,7 @@ impl AppArgs {
         } else {
             None
         };
-        println!("self.dict_path: {:?}", self.dict_path);
+        // println!("self.dict_path: {:?}", self.dict_path);
 
         // 取 length ，判断 length 格式是否合法
         match self.parse_length(matches.get_one::<String>("length")) {
