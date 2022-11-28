@@ -127,7 +127,7 @@ impl AppArgs {
         // 取 output
         self.output_path = matches
             .get_one::<String>("output")
-            .map_or(format!("{}.txt", self.target), |it| it.to_owned());
+            .map_or(format!("{}.out.txt", self.target), |it| it.to_owned());
 
         // 取 nameserver
         self.nameserver_list = matches
