@@ -16,5 +16,5 @@ itertools = "0.10.2"
 async-trait = "0.1.58"
 trust-dns-resolver = "0.22.0"
 rand = "0.8.5"
-reqwest = "0.11.12"
+reqwest = {version = "0.11.12", features = ["rustls-tls"], default-features = false }
 regex = "1.7.0"
