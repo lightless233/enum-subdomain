@@ -43,7 +43,7 @@ pub async fn saver(
             result.ip,
             result.cname,
             result.code.unwrap_or(0),
-            result.title.unwrap_or_else(|| "".to_string()),
+            result.title.unwrap_or_default(),
         );
         if let Err(e) = output_file.write(line.as_bytes()).await {
             eprintln!("write file error, value: {:?}, error: {:?}", line, e)
