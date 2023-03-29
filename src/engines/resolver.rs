@@ -94,14 +94,33 @@ pub fn build_resolver(
 ) -> Result<AsyncResolver<GenericConnection, GenericConnectionProvider<TokioRuntime>>, ResolveError>
 {
     let resolve_config = if nameservers.is_empty() {
-        // 使用内置的 google DNS
-        ResolverConfig::google()
+        // 内置使用多个 DNS，防止一个出现超时全部卡死的情况
+        // 1. 添加国内 DNS
+        let mut config = ResolverConfig::new();
+        config.add_name_server(NameServerConfig::new("223.5.5.5:53".parse::<SocketAddr>().unwrap(), Protocol::Udp));
+        config.add_name_server(NameServerConfig::new("223.6.6.6:53".parse::<SocketAddr>().unwrap(), Protocol::Udp));
+        // tencent
+        config.add_name_server(NameServerConfig::new("119.29.29.29:53".parse::<SocketAddr>().unwrap(), Protocol::Udp));
+        // baidu
+        config.add_name_server(NameServerConfig::new("180.76.76.76:53".parse::<SocketAddr>().unwrap(), Protocol::Udp));
+
+        // 2. 添加 Google DNS
+        config.add_name_server(NameServerConfig::new("8.8.8.8:53".parse::<SocketAddr>().unwrap(), Protocol::Udp));
+        config.add_name_server(NameServerConfig::new("8.8.4.4:53".parse::<SocketAddr>().unwrap(), Protocol::Udp));
+
+        // 3. 添加 Cloudflare DNS
+        config.add_name_server(NameServerConfig::new("1.1.1.1:53".parse::<SocketAddr>().unwrap(), Protocol::Udp));
+
+        // 兜底
+        config.add_name_server(NameServerConfig::new("114.114.114.114:53".parse::<SocketAddr>().unwrap(), Protocol::Udp));
+
+        config
     } else {
         // 使用用户提供的 NS IP
-        let mut resolve_config = ResolverConfig::default();
+        let mut resolve_config = ResolverConfig::new();
         for ns_ip in nameservers {
             match format!("{}:53", ns_ip).parse::<SocketAddr>() {
-                Ok(ip) => resolve_config.add_name_server(NameServerConfig::new(ip, Protocol::Udp)),
+                Ok(ip) => resolve_config.add_name_server(NameServerConfig::new(ip, Protocol::Tcp)),
                 Err(e) => {
                     eprintln!("Invalid Nameserver IP {}, error: {:?}, skip.", ns_ip, e);
                     continue;
@@ -111,7 +130,10 @@ pub fn build_resolver(
         resolve_config
     };
 
-    TokioAsyncResolver::tokio(resolve_config, ResolverOpts::default())
+    // 查询超时时间改成1秒
+    let mut opts = ResolverOpts::default();
+    opts.timeout = Duration::from_secs(1);
+    TokioAsyncResolver::tokio(resolve_config, opts)
 }
 
 /// 检查泛解析
