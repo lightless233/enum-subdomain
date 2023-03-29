@@ -165,21 +165,28 @@ async fn http_worker(
     re: &Regex,
     http_client: &Client,
 ) -> (Option<u16>, Option<String>) {
-    let url = format!("http://{}", target);
-    match http_client.get(url).send().await {
-        Ok(resp) => {
-            let code = resp.status().as_u16();
-            let html = resp.text().await.unwrap();
-            let mut title: Option<String> = None;
-            if let Some(caps) = re.captures(&html) {
-                let _title = caps.name("title").map_or("", |m| m.as_str()).to_owned();
-                title = Some(_title);
+    let urls = [format!("http://{}", target), format!("https://{}", target)];
+    for url in urls.iter() {
+        match http_client.get(url).send().await {
+            Ok(resp) => {
+                let code = resp.status().as_u16();
+                let html = resp.text().await.unwrap();
+                let mut title: Option<String> = None;
+                if let Some(caps) = re.captures(&html) {
+                    let _title = caps.name("title").map_or("", |m| m.as_str()).to_owned();
+                    title = Some(_title);
+                }
+                return (Some(code), title);
             }
-            (Some(code), title)
-        }
-        Err(e) => {
-            eprintln!("Fetch HTTP status_code and title error. error: {:?}", e);
-            (None, None)
+            Err(e) => {
+                eprintln!(
+                    "Fetch HTTP status_code and title error. error: {:?}. Try HTTPS...",
+                    e
+                );
+                continue;
+            }
         }
     }
+
+    (None, None)
 }
