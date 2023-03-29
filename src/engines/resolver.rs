@@ -39,6 +39,7 @@ pub async fn resolver(
     // 构建 http client
     let http_client = ClientBuilder::new()
         .timeout(Duration::from_secs(9))
+        .danger_accept_invalid_certs(true)
         .build()
         .unwrap();
 
